@@ -1,0 +1,20 @@
+{
+  "p-001": {
+    "name": "Sara Demo",
+    "date_of_birth": "1970-03-14",
+    "mrn": "MRN-100001",
+    "condition": "hypertension",
+    "target": "blood pressure below 130/80",
+    "medications": ["amlodipine 5mg once daily"],
+    "thresholds": {"systolic": 180, "diastolic": 110}
+  },
+  "p-002": {
+    "name": "Omar Demo",
+    "date_of_birth": "1962-11-02",
+    "mrn": "MRN-100002",
+    "condition": "type 2 diabetes",
+    "target": "fasting glucose 80-130 mg/dL",
+    "medications": ["metformin 500mg twice daily"],
+    "thresholds": {"glucose_high": 300, "glucose_low": 70}
+  }
+}

@@ -1,0 +1,23 @@
+# Secrets
+.env
+
+# Virtual environment
+.venv/
+venv/
+
+# Database files
+*.db
+data/*.db
+
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+
+# LangGraph dev server
+.langgraph_api/
+
+# macOS / Windows
+.DS_Store
+Thumbs.db

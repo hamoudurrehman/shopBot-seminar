@@ -1,0 +1,11 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "agent": "./app/agent.py:agent",
+    "care_team": "./app/multi_agent.py:care_team"
+  },
+  "env": ".env",
+  "store": {
+    "index": {"embed": "openai:text-embedding-3-small", "dims": 1536}
+  }
+}

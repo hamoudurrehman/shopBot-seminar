@@ -1,0 +1,112 @@
+[
+  {
+    "id": "PROD-001",
+    "name": "Ethiopian Yirgacheffe Single Origin Beans",
+    "category": "Coffee",
+    "price": 18.50,
+    "stock": 45,
+    "description": "Floral, bergamot, and ripe peach tasting notes. Light roast, 250g whole beans.",
+    "tags": ["coffee", "light roast", "beans", "single origin", "fruity"],
+    "rating": 4.9,
+    "upsell_with": ["PROD-004", "PROD-007"]
+  },
+  {
+    "id": "PROD-002",
+    "name": "Velvet Night Espresso Dark Roast",
+    "category": "Coffee",
+    "price": 16.00,
+    "stock": 60,
+    "description": "Rich dark chocolate, toasted hazelnut, and caramel crema. Perfect for espresso and moka pot.",
+    "tags": ["coffee", "dark roast", "espresso", "beans", "rich"],
+    "rating": 4.8,
+    "upsell_with": ["PROD-008", "PROD-004"]
+  },
+  {
+    "id": "PROD-003",
+    "name": "Mountain Water Swiss Decaf Blend",
+    "category": "Coffee",
+    "price": 17.00,
+    "stock": 30,
+    "description": "100% chemical-free decaf process with notes of brown sugar, milk chocolate, and roasted almond.",
+    "tags": ["coffee", "decaf", "medium roast", "gentle"],
+    "rating": 4.7,
+    "upsell_with": ["PROD-007"]
+  },
+  {
+    "id": "PROD-004",
+    "name": "Ceramic Pour-Over Dripper (V60 Style)",
+    "category": "Gear",
+    "price": 24.00,
+    "stock": 25,
+    "description": "Handmade ceramic dripper with spiral ribs for maximum coffee extraction. Matte off-white finish.",
+    "tags": ["gear", "pour over", "ceramic", "brewing", "dripper"],
+    "rating": 4.9,
+    "upsell_with": ["PROD-005", "PROD-001"]
+  },
+  {
+    "id": "PROD-005",
+    "name": "Matte Black Gooseneck Precision Kettle",
+    "category": "Gear",
+    "price": 58.00,
+    "stock": 18,
+    "description": "Ergonomic counterbalance handle with precision pour spout and built-in analog thermometer (1.0L capacity).",
+    "tags": ["gear", "kettle", "gooseneck", "precision", "brewing"],
+    "rating": 4.9,
+    "upsell_with": ["PROD-004", "PROD-006"]
+  },
+  {
+    "id": "PROD-006",
+    "name": "Stainless Conical Burr Hand Grinder",
+    "category": "Gear",
+    "price": 65.00,
+    "stock": 20,
+    "description": "48mm titanium-coated burrs, 30 stepped grind settings from Turkish to French Press.",
+    "tags": ["gear", "grinder", "burr", "manual", "coffee"],
+    "rating": 4.8,
+    "upsell_with": ["PROD-001", "PROD-002"]
+  },
+  {
+    "id": "PROD-007",
+    "name": "Handcrafted Speckled Stoneware Mug (350ml)",
+    "category": "Ceramics",
+    "price": 22.00,
+    "stock": 40,
+    "description": "Individually thrown stoneware mug with raw clay base and reactive speckled glaze. Dishwasher safe.",
+    "tags": ["ceramics", "mug", "handmade", "tableware"],
+    "rating": 4.9,
+    "upsell_with": ["PROD-001", "PROD-003"]
+  },
+  {
+    "id": "PROD-008",
+    "name": "Double-Wall Vacuum Insulated Travel Tumbler (500ml)",
+    "category": "Ceramics",
+    "price": 28.00,
+    "stock": 35,
+    "description": "Keeps drinks piping hot for 8 hours or iced for 18 hours. Leak-proof ceramic coated interior.",
+    "tags": ["travel", "tumbler", "insulated", "ceramic", "gear"],
+    "rating": 4.8,
+    "upsell_with": ["PROD-002"]
+  },
+  {
+    "id": "PROD-009",
+    "name": "Heavyweight Organic Cotton Logo Tee",
+    "category": "Apparel",
+    "price": 32.00,
+    "stock": 50,
+    "description": "240 GSM organic combed cotton, relaxed boxy fit. Available in sizes Small, Medium, Large, XL.",
+    "tags": ["apparel", "tshirt", "organic", "cotton", "clothing"],
+    "rating": 4.7,
+    "upsell_with": ["PROD-010"]
+  },
+  {
+    "id": "PROD-010",
+    "name": "Heavy Duty Waxed Canvas Everyday Tote",
+    "category": "Apparel",
+    "price": 36.00,
+    "stock": 28,
+    "description": "Weather-resistant 16oz waxed canvas with internal laptop sleeve and sturdy full-grain leather straps.",
+    "tags": ["apparel", "bag", "tote", "canvas", "accessories"],
+    "rating": 4.9,
+    "upsell_with": ["PROD-007", "PROD-008"]
+  }
+]
