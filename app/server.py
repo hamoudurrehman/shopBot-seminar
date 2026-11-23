@@ -16,7 +16,7 @@ from app import db
 from app.agent import process_chat
 
 app = FastAPI(
-    title="ShopBot Agent API",
+    title="KhareedaarAI Agent API",
     description="Autonomous Sales & Storefront Agent API for Small Businesses",
     version="1.0.0"
 )
@@ -44,6 +44,20 @@ class ChatResponse(BaseModel):
 
 
 # --- REQUIRED GRADING ENDPOINTS ---
+
+@app.get("/")
+def root():
+    """Welcome and status endpoint."""
+    return {
+        "status": "online",
+        "service": "KhareedaarAI Agent API",
+        "endpoints": {
+            "health": "/health",
+            "chat": "/chat (POST)",
+            "docs": "/docs"
+        }
+    }
+
 
 @app.get("/health", response_class=PlainTextResponse)
 def health_check():

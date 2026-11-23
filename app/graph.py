@@ -1,4 +1,4 @@
-"""LangGraph multi-node state graph for ShopBot.
+"""LangGraph multi-node state graph for KhareedaarAI.
 
 Nodes:
 1. guardrail_node: Enforces prompt injection & off-topic safety.
@@ -26,34 +26,42 @@ from app import tools as t
 
 load_dotenv()
 
-# Select model: default to Claude 3.5 Haiku (or claude-haiku-5-5 as specified)
-MODEL_NAME = os.getenv("MODEL_NAME", "claude-haiku-5-5")
+# Model explicitly hardcoded as required: claude-haiku-5-5
+MODEL_NAME = "claude-haiku-5-5"
+
+
+def extract_text_content(content: Any) -> str:
+    """Extract plain text string from Anthropic message content blocks (which may contain thinking blocks or lists)."""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        texts = []
+        for block in content:
+            if isinstance(block, dict):
+                # Filter out 'thinking' or non-text blocks; grab only pure 'text'
+                if block.get("type") == "text" and "text" in block:
+                    texts.append(block["text"])
+                elif "text" in block and block.get("type") != "thinking":
+                    texts.append(str(block["text"]))
+            elif isinstance(block, str):
+                texts.append(block)
+        return "\n\n".join(texts).strip()
+    return str(content)
 
 
 def get_llm():
-    """Initialize the LLM with appropriate API key or fallback."""
+    """Initialize the LLM strictly with claude-haiku-5-5."""
     api_key = os.getenv("ANTHROPIC_API_KEY")
     if api_key and not api_key.startswith("sk-ant-dummy"):
         try:
             from langchain_anthropic import ChatAnthropic
-            # Allow model override or fallback
             return ChatAnthropic(
                 model_name=MODEL_NAME,
                 anthropic_api_key=api_key,
-                temperature=0.2,
                 max_tokens=1000
             )
         except Exception as e:
             print(f"[Warning] Failed to initialize ChatAnthropic: {e}")
-
-    # Fallback to OpenAI if Anthropic is not configured
-    openai_key = os.getenv("OPENAI_API_KEY")
-    if openai_key and not openai_key.startswith("sk-..."):
-        try:
-            from langchain_openai import ChatOpenAI
-            return ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
-        except Exception:
-            pass
 
     return None
 
@@ -139,17 +147,20 @@ def sales_node(state: ShopState) -> Dict[str, Any]:
     order_keywords = ["buy", "order", "purchase", "checkout", "i'll take", "place an order"]
     is_order = any(kw in user_text for kw in order_keywords)
 
-    system_prompt = f"""You are the sales consultant for Artisan & Oak, an artisan coffee, ceramics, and lifestyle boutique.
+    system_prompt = f"""You are the sales consultant for The Rustic Stop, an artisan coffee, ceramics, and lifestyle boutique.
 You assist customers with recommendations, answers about products, coffee brewing tips, and apparel sizing.
 
+Current User Profile:
+- User ID: {user_id}
 {memory_context}
 
 Guidelines:
 1. Always suggest products from our catalog that fit the customer's tastes.
 2. Upsell naturally: when a customer shows interest in coffee beans, recommend a matching dripper, mug, or kettle.
-3. If the customer mentions a personal preference (e.g. 'I only drink decaf', 'My size is Medium', 'I love dark roast'), use save_customer_preference to save it for their future visits.
+3. Long-Term Memory (Crucial): Whenever the customer states a personal preference, taste, habit, or size (for example: 'I only like decaf', 'I prefer dark roast', 'My size is Medium', 'Remember that I love pour-over'), you MUST immediately call the `save_customer_preference` tool with `preference_key` and `preference_value` in the same turn. You already have the customer's session profile (User ID: {user_id}) so NEVER ask the customer for their user ID or email before saving their preference.
 4. Keep answers friendly, knowledgeable, and concise.
 5. If the customer wants to buy or place an order, indicate the items clearly so checkout can take over.
+6. Scope of Capabilities: If a customer asks questions completely unrelated to shopping, products, coffee/ceramics/apparel, orders, or store policies (e.g., coding, general knowledge, math, creative writing, science), politely decline with a professional message explaining that it is outside your capabilities as the sales assistant for The Rustic Stop, and guide them back to our catalog or services.
 """
 
     llm = get_llm()
@@ -190,9 +201,9 @@ Guidelines:
                 # Second invocation with tool results
                 second_response = llm.invoke(full_history + new_messages)
                 new_messages.append(second_response)
-                reply = second_response.content
+                reply = extract_text_content(second_response.content)
             else:
-                reply = response.content
+                reply = extract_text_content(response.content)
 
             return {
                 "messages": new_messages,
@@ -226,7 +237,7 @@ Guidelines:
     else:
         catalog = db.get_catalog()
         sample = [p["name"] for p in catalog[:3]]
-        reply = f"Welcome to Artisan & Oak! Some of our customer favorites include: {', '.join(sample)}. How can I assist you today?"
+        reply = f"Welcome to The Rustic Stop! Some of our customer favorites include: {', '.join(sample)}. How can I assist you today?"
 
     tokens["in"] += len(user_text.split()) * 2
     tokens["out"] += len(reply.split()) * 2
@@ -309,7 +320,7 @@ def checkout_node(state: ShopState) -> Dict[str, Any]:
         "items": items,
         "customer_name": f"Customer {user_id}",
         "customer_email": f"{user_id}@example.com",
-        "customer_address": "456 Artisan Way, Suite 101",
+        "customer_address": "456 Rustic Way, Suite 101",
         "discount_code": discount_code
     })
     tool_calls_made.append({"name": "create_order", "args": {"user_id": user_id, "items": items}})
@@ -350,7 +361,7 @@ def route_after_sales(state: ShopState) -> str:
 
 # --- Graph Construction ---
 
-def build_shopbot_graph(checkpointer=None):
+def build_khareedaarai_graph(checkpointer=None):
     workflow = StateGraph(ShopState)
 
     workflow.add_node("guardrail", guardrail_node)

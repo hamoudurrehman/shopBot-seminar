@@ -1,4 +1,4 @@
-"""Safety & Guardrails Module for ShopBot.
+"""Safety & Guardrails Module for KhareedaarAI.
 
 Enforces:
 1. Rejection of off-topic requests (coding, medical diagnosis, politics, homework).
@@ -22,18 +22,21 @@ INJECTION_PATTERNS = [
 
 # Off-topic request patterns
 OFF_TOPIC_PATTERNS = [
-    r"\b(write|generate|debug|fix)\s+(a\s+)?(python|java|javascript|c\+\+|sql|code|script|html|css)\b",
+    r"\b(write|generate|debug|fix|create|show)\b.*\b(python|java|javascript|c\+\+|sql|code|script|html|css|algorithm|function|program|app)\b",
     r"\b(solve|calculate)\b.*\b(calculus|equation|derivative|integral|algebra|homework|math)\b",
     r"\b(differential\s+equation|calculus|homework\s+assignment|write\s+(an|my)\s+essay)\b",
     r"\b(diagnose|cure|prescribe|medication|medicine|pills|treatment|doctor|medical|symptom|blood\s+pressure|diabetes|cancer)\b",
-    r"\b(who\s+should\s+i\s+vote\s+for|presidential\s+election|political\s+party|democrat|republican)\b"
+    r"\b(who\s+should\s+i\s+vote\s+for|presidential\s+election|political\s+party|democrat|republican)\b",
+    r"\b(what\s+is\s+the\s+meaning\s+of|define|definition\s+of|explain\s+the\s+concept\s+of)\b",
+    r"\b(translate|write\s+a\s+poem|tell\s+a\s+joke|write\s+a\s+story|summarize\s+this\s+article)\b"
 ]
 
 SAFE_STORE_KEYWORDS = [
     "coffee", "bean", "roast", "espresso", "latte", "pour-over", "dripper", "kettle",
     "grinder", "mug", "tumbler", "tee", "shirt", "tote", "bag", "order", "cart",
     "buy", "price", "catalog", "product", "discount", "coupon", "shipping", "size",
-    "recommend", "stock", "track", "status", "store", "shop", "preference", "hello", "hi"
+    "recommend", "stock", "track", "status", "store", "shop", "preference", "hello", "hi", "hey",
+    "return", "refund", "hours", "rustic", "item", "purchase", "cost"
 ]
 
 
@@ -42,7 +45,7 @@ def check_prompt_injection(message: str) -> Tuple[bool, str]:
     msg = message.lower()
     for pattern in INJECTION_PATTERNS:
         if re.search(pattern, msg):
-            return True, "I cannot fulfill this request. I am programmed to assist only with shopping, products, and orders at Artisan & Oak."
+            return True, "I cannot fulfill this request. I am programmed to assist only with shopping, products, and orders at The Rustic Stop."
     return False, ""
 
 
@@ -51,13 +54,20 @@ def check_off_topic(message: str) -> Tuple[bool, str]:
     msg = message.lower()
     for pattern in OFF_TOPIC_PATTERNS:
         if re.search(pattern, msg):
-            return True, "I am ShopBot, your sales assistant for Artisan & Oak. I can only assist with product recommendations, catalog browsing, orders, and store policies."
+            return True, (
+                "I am KhareedaarAI, the dedicated shopping and sales assistant for The Rustic Stop. "
+                "That request is outside of my capabilities, as I only assist with our products, recommendations, "
+                "orders, and store services. Please let me know if you would like help browsing our catalog!"
+            )
 
-    # If message is long and lacks any store-related keywords, flag as potentially off-topic
+    # If message has non-trivial length and lacks any store-related keywords or greetings
     words = set(re.findall(r"\w+", msg))
-    if len(words) > 12 and not any(kw in msg for kw in SAFE_STORE_KEYWORDS):
-        # Allow pleasantries or general questions if short, but reject completely unrelated long queries
-        return True, "I specialize in our lifestyle and coffee catalog. How can I help you find products or manage your orders today?"
+    if len(words) >= 6 and not any(kw in msg for kw in SAFE_STORE_KEYWORDS):
+        return True, (
+            "I apologize, but this falls outside my scope of expertise. As the sales assistant for The Rustic Stop, "
+            "I can assist you with product recommendations, order tracking, and store policies. "
+            "How can I help you with our store today?"
+        )
 
     return False, ""
 

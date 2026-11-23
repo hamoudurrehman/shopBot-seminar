@@ -1,4 +1,4 @@
-"""ShopBot Complete Web Application: Customer Storefront + Seller Admin Dashboard.
+"""KhareedaarAI Complete Web Application: Customer Storefront + Seller Admin Dashboard.
 
 Run via:
     streamlit run ui/streamlit_app.py
@@ -19,7 +19,7 @@ from app.agent import process_chat
 from app.safety import check_off_topic, check_prompt_injection
 
 st.set_page_config(
-    page_title="ShopBot | AI Storefront & Seller Dashboard",
+    page_title="KhareedaarAI | AI Storefront & Seller Dashboard",
     page_icon="🛍️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -98,7 +98,7 @@ if "cart" not in st.session_state:
 
 # Sidebar Navigation
 with st.sidebar:
-    st.title("🛍️ ShopBot Studio")
+    st.title("🛍️ KhareedaarAI Studio")
     st.caption("AI Storefront & Small Seller Engine")
     
     app_mode = st.radio(
@@ -138,7 +138,7 @@ with st.sidebar:
 # VIEW 1: CUSTOMER STOREFRONT
 # ==============================================================================
 if app_mode == "🛍️ Customer Storefront":
-    st.title("☕ Artisan & Oak Boutique")
+    st.title("☕ The Rustic Stop")
     st.markdown("*Curated Specialty Coffee, Precision Brewing Gear & Everyday Goods.*")
     
     col_catalog, col_chat = st.columns([1.2, 1.0], gap="large")
@@ -212,7 +212,7 @@ if app_mode == "🛍️ Customer Storefront":
         t_id = st.session_state.thread_id
         if t_id not in st.session_state.chat_history:
             st.session_state.chat_history[t_id] = [
-                {"role": "assistant", "content": f"Hi {st.session_state.user_id.capitalize()}! Welcome to Artisan & Oak. I can recommend coffee roasts, help you select sizes, or track your orders. What are you looking for today?"}
+                {"role": "assistant", "content": f"Hi {st.session_state.user_id.capitalize()}! Welcome to The Rustic Stop. I can recommend coffee roasts, help you select sizes, or track your orders. What are you looking for today?"}
             ]
             
         chat_box = st.container(height=380)
@@ -254,8 +254,8 @@ if app_mode == "🛍️ Customer Storefront":
             # 1. Append user message
             st.session_state.chat_history[t_id].append({"role": "user", "content": user_input})
             
-            # 2. Invoke ShopBot Agent
-            with st.spinner("ShopBot is thinking..."):
+            # 2. Invoke KhareedaarAI Agent
+            with st.spinner("KhareedaarAI is thinking..."):
                 response = process_chat(
                     user_id=st.session_state.user_id,
                     thread_id=st.session_state.thread_id,
@@ -388,7 +388,7 @@ elif app_mode == "📊 Seller Admin Dashboard":
                 if isinstance(data, list):
                     for item in data:
                         db.add_product(item)
-                    st.success(f"Successfully imported {len(data)} products into ShopBot!")
+                    st.success(f"Successfully imported {len(data)} products into KhareedaarAI!")
                     st.rerun()
                 else:
                     st.error("JSON file must be an array of product objects.")
@@ -401,7 +401,7 @@ elif app_mode == "📊 Seller Admin Dashboard":
 # ==============================================================================
 elif app_mode == "🛡️ Safety & Memory Inspector":
     st.title("🛡️ Safety, Memory & Isolation Inspector")
-    st.markdown("Inspect ShopBot's dual-tier memory system and prompt injection/off-topic guardrails.")
+    st.markdown("Inspect KhareedaarAI's dual-tier memory system and prompt injection/off-topic guardrails.")
     
     col_mem, col_safe = st.columns(2, gap="large")
     

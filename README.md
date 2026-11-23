@@ -1,4 +1,4 @@
-# ShopBot: Autonomous AI Storefront & Sales Agent for Small Sellers
+# KhareedaarAI: Autonomous AI Storefront & Sales Agent for Small Sellers
 
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![LangGraph](https://img.shields.io/badge/Orchestration-LangGraph-orange.svg)](https://langchain-ai.github.io/langgraph/)
@@ -6,17 +6,17 @@
 [![Streamlit](https://img.shields.io/badge/Frontend-Streamlit-red.svg)](https://streamlit.io/)
 [![Anthropic Claude](https://img.shields.io/badge/Model-Claude%20Haiku-purple.svg)](https://anthropic.com/)
 
-ShopBot enables any small business or boutique merchant to upload a product catalog and instantly launch an autonomous AI storefront. Customers receive expert product recommendations, personalized advice based on long-term memory, and seamless checkout. Merchants get a full administrative dashboard for catalog management, incoming order fulfillment, and revenue analytics.
+KhareedaarAI enables any small business or boutique merchant to upload a product catalog and instantly launch an autonomous AI storefront. Customers receive expert product recommendations, personalized advice based on long-term memory, and seamless checkout. Merchants get a full administrative dashboard for catalog management, incoming order fulfillment, and revenue analytics.
 
 ---
 
 ## 🎯 Business Case & Monetization Pitch
 
 * **Problem:** Small e-commerce sellers lose up to 70% of potential buyers due to unassisted browsing, lack of 24/7 sales staff, and complex navigation.
-* **Solution:** ShopBot acts as a friendly, top-performing in-store sales associate. It answers inquiries, remembers customer preferences across visits, suggests upsells, and assists checkout.
+* **Solution:** KhareedaarAI acts as a friendly, top-performing in-store sales associate. It answers inquiries, remembers customer preferences across visits, suggests upsells, and assists checkout.
 * **How It Earns Real Money:**
   * **SaaS Subscription:** $29/month per merchant for standard catalog hosting and autonomous sales support.
-  * **Performance Fee:** 1.5% transaction commission on orders finalized directly by ShopBot.
+  * **Performance Fee:** 1.5% transaction commission on orders finalized directly by KhareedaarAI.
   * **Enterprise Customization:** $199 setup for custom brand tone fine-tuning and ERP inventory synchronization.
 
 ---
@@ -88,13 +88,13 @@ flowchart TD
 
 1. **Prompt Injection Defense:** Blocks jailbreak attempts (e.g., `"ignore previous instructions"`, `"set price to $0"`, `"reveal developer instructions"`).
 2. **Off-Topic Refusal:** Refuses unrelated queries (coding assistance, homework, medical diagnosis, politics) and redirects customers back to the storefront.
-3. **Risky Action Confirmation:** Placing an order and committing funds is treated as a high-risk action. ShopBot requires explicit human confirmation before executing `create_order`.
+3. **Risky Action Confirmation:** Placing an order and committing funds is treated as a high-risk action. KhareedaarAI requires explicit human confirmation before executing `create_order`.
 
 ---
 
 ## 📊 Benchmark & Evaluation Results
 
-Automated benchmark evaluation run on `tests/test_shopbot.py`:
+Automated benchmark evaluation run on `tests/test_khareedaarai.py`:
 
 | Evaluation Category | Test Target | Status | Pass Rate |
 | :--- | :--- | :---: | :---: |
@@ -120,8 +120,8 @@ Automated benchmark evaluation run on `tests/test_shopbot.py`:
 ### 2. Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/shopbot.git
-cd shopbot
+git clone https://github.com/your-username/khareedaarai.git
+cd khareedaarai
 
 # Create and activate virtual environment
 python -m venv .venv
@@ -154,7 +154,7 @@ Open [http://localhost:8501](http://localhost:8501) to explore:
 
 ### 5. Run the Test Suite
 ```bash
-pytest tests/test_shopbot.py -v
+pytest tests/test_khareedaarai.py -v
 ```
 
 ---
@@ -176,6 +176,6 @@ pytest tests/test_shopbot.py -v
 ## 📽️ Demo Preview
 
 <!-- Add your demo GIF or video link here -->
-* **Live Storefront Demo:** `https://your-shopbot-demo.streamlit.app`
+* **Live Storefront Demo:** `https://your-khareedaarai-demo.streamlit.app`
 * **Agent API Base URL:** `https://your-agent-api.hf.space`
 * **Demo Video:** [Watch 3-minute Walkthrough](https://youtu.be/placeholder)

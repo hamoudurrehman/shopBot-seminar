@@ -1,4 +1,4 @@
-"""Real tools for ShopBot sales and order fulfillment.
+"""Real tools for KhareedaarAI sales and order fulfillment.
 
 All tools interact with the persistent database and enforce multi-user boundaries.
 """
@@ -178,16 +178,18 @@ def get_order_status(user_id: str, order_id: str) -> Dict[str, Any]:
 
 
 @tool
-def save_customer_preference(user_id: str, preference_key: str, preference_value: str) -> Dict[str, str]:
+def save_customer_preference(preference_key: str, preference_value: str, user_id: Optional[str] = None) -> Dict[str, str]:
     """Save a user preference or fact into persistent long-term memory across sessions.
+    The user_id is automatically managed by the system, so you only need to provide the key and value.
 
     Args:
-        user_id: User identifier
-        preference_key: Key name (e.g. 'favorite_roast', 'shirt_size', 'brewing_method')
-        preference_value: Value (e.g. 'Dark Roast', 'Medium', 'Pour Over')
+        preference_key: Key name (e.g. 'favorite_roast', 'shirt_size', 'brewing_method', 'coffee_type')
+        preference_value: Value (e.g. 'decaf', 'Dark Roast', 'Medium', 'Pour Over')
+        user_id: Optional user identifier (automatically injected)
     """
-    db.set_user_memory(user_id=user_id, pref_key=preference_key, pref_value=preference_value)
-    return {"status": "saved", "user_id": user_id, "key": preference_key, "value": preference_value}
+    uid = user_id or "guest"
+    db.set_user_memory(user_id=uid, pref_key=preference_key, pref_value=preference_value)
+    return {"status": "saved", "user_id": uid, "key": preference_key, "value": preference_value}
 
 
 @tool

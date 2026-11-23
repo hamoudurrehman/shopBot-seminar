@@ -1,0 +1,39 @@
+services:
+  # 1. FastAPI Agent Backend
+  - type: web
+    name: khareedaarai-api
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.server:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: MODEL_NAME
+        value: claude-haiku-5-5
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+
+  # 2. Streamlit Customer Storefront & Seller Dashboard
+  - type: web
+    name: khareedaarai-ui
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "streamlit run ui/streamlit_app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false

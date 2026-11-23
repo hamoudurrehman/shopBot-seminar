@@ -1,4 +1,4 @@
-"""Automated Test Suite for ShopBot.
+"""Automated Test Suite for KhareedaarAI.
 
 Tests all 5 Absolutes:
 1. Grading API contract (POST /chat, GET /health)
@@ -88,7 +88,7 @@ def test_off_topic_rejection():
         })
         assert resp.status_code == 200
         data = resp.json()
-        assert "Artisan & Oak" in data["reply"] or "lifestyle" in data["reply"] or "cannot" in data["reply"]
+        assert "The Rustic Stop" in data["reply"] or "lifestyle" in data["reply"] or "cannot" in data["reply"]
 
 
 # --- 3. Tool Accuracy & Calculations ---

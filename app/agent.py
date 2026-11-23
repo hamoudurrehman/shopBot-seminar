@@ -1,4 +1,4 @@
-"""ShopBot Agent Entrypoint.
+"""KhareedaarAI Agent Entrypoint.
 
 Handles graph compilation, checkpointer state tracking per thread_id,
 and formats responses exactly to match the grading specification:
@@ -11,10 +11,10 @@ and formats responses exactly to match the grading specification:
 from typing import Any, Dict, List
 from langchain_core.messages import HumanMessage
 
-from app.graph import build_shopbot_graph
+from app.graph import build_khareedaarai_graph, extract_text_content
 
 # Global compiled graph instance with persistent memory saver
-_graph = build_shopbot_graph()
+_graph = build_khareedaarai_graph()
 
 
 def process_chat(user_id: str, thread_id: str, message: str) -> Dict[str, Any]:
@@ -46,7 +46,8 @@ def process_chat(user_id: str, thread_id: str, message: str) -> Dict[str, Any]:
 
     try:
         final_state = _graph.invoke(initial_state, config=config)
-        reply = final_state.get("final_reply") or "Thank you for visiting Artisan & Oak. How may I help you today?"
+        raw_reply = final_state.get("final_reply") or "Thank you for visiting The Rustic Stop. How may I help you today?"
+        reply = extract_text_content(raw_reply)
         tool_calls = final_state.get("tool_calls_made", [])
         tokens = final_state.get("tokens", {"in": 0, "out": 0})
 
@@ -62,7 +63,7 @@ def process_chat(user_id: str, thread_id: str, message: str) -> Dict[str, Any]:
     except Exception as e:
         print(f"[Agent Execution Error] {e}")
         return {
-            "reply": "I am here to help with your Artisan & Oak order and shopping needs. Please let me know how I can assist!",
+            "reply": "I am here to help with your The Rustic Stop order and shopping needs. Please let me know how I can assist!",
             "tool_calls": [],
             "tokens": {"in": 10, "out": 25}
         }

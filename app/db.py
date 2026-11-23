@@ -1,7 +1,10 @@
-"""Persistent database layer for ShopBot.
+"""Persistent database layer for KhareedaarAI.
 
-Supports SQLite by default (persistent across restarts),
-with seamless PostgreSQL / Supabase connection if DATABASE_URL is set.
+Supports:
+1. Supabase REST API (Free hosted PostgreSQL on Supabase) via SUPABASE_URL & SUPABASE_KEY.
+2. PostgreSQL (direct connection / Neon / Supabase connection pooling) if psycopg2/psycopg is available.
+3. Persistent SQLite fallback if remote hosted credentials are not provided.
+
 Enforces multi-user data isolation at the query level.
 """
 import json
@@ -11,10 +14,28 @@ import threading
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+import requests
 
-DB_FILE = Path(__file__).resolve().parent.parent / "data" / "shopbot.db"
+DB_FILE = Path(__file__).resolve().parent.parent / "data" / "khareedaarai.db"
 CATALOG_SEED = Path(__file__).resolve().parent.parent / "data" / "catalog.json"
 _lock = threading.Lock()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
+
+
+def is_supabase_enabled() -> bool:
+    """Return True if Supabase hosted database credentials are configured."""
+    return bool(SUPABASE_URL and SUPABASE_KEY and not SUPABASE_KEY.startswith("your-"))
+
+
+def _supabase_headers() -> Dict[str, str]:
+    return {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    }
 
 
 def get_db_connection():
@@ -270,9 +291,33 @@ def update_order_status_db(order_id: str, new_status: str) -> bool:
 # --- Long-Term Memory Functions (Persists across conversations by user_id) ---
 
 def set_user_memory(user_id: str, pref_key: str, pref_value: str) -> None:
-    """Save persistent user preference / fact into database keyed by user_id."""
+    """Save persistent user preference / fact into database keyed by user_id.
+    
+    If SUPABASE_URL and SUPABASE_KEY are provided, writes directly to hosted Supabase PostgreSQL.
+    Otherwise persists to SQLite.
+    """
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+    if is_supabase_enabled():
+        try:
+            url = f"{SUPABASE_URL}/rest/v1/user_memories"
+            headers = _supabase_headers()
+            headers["Prefer"] = "resolution=merge-duplicates"
+            payload = {
+                "user_id": user_id,
+                "pref_key": pref_key,
+                "pref_value": str(pref_value),
+                "updated_at": now
+            }
+            resp = requests.post(url, json=payload, headers=headers, timeout=5)
+            if resp.status_code in (200, 201):
+                return
+            print(f"[Supabase Warning] Memory insert returned {resp.status_code}: {resp.text}")
+        except Exception as e:
+            print(f"[Supabase Error] set_user_memory fallback to local: {e}")
+
+    # Local fallback
     with _lock, get_db_connection() as conn:
-        now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
         conn.execute("""
             INSERT OR REPLACE INTO user_memories (user_id, pref_key, pref_value, updated_at)
             VALUES (?, ?, ?, ?)
@@ -281,7 +326,25 @@ def set_user_memory(user_id: str, pref_key: str, pref_value: str) -> None:
 
 
 def get_user_memories(user_id: str) -> Dict[str, str]:
-    """Retrieve all persistent memories and preferences for a user."""
+    """Retrieve all persistent memories and preferences for a user.
+    
+    Queries hosted Supabase PostgreSQL if configured, otherwise SQLite.
+    """
+    if is_supabase_enabled():
+        try:
+            url = f"{SUPABASE_URL}/rest/v1/user_memories"
+            params = {
+                "user_id": f"eq.{user_id}",
+                "select": "pref_key,pref_value"
+            }
+            resp = requests.get(url, params=params, headers=_supabase_headers(), timeout=5)
+            if resp.status_code == 200:
+                data = resp.json()
+                return {item["pref_key"]: item["pref_value"] for item in data}
+            print(f"[Supabase Warning] Memory fetch returned {resp.status_code}: {resp.text}")
+        except Exception as e:
+            print(f"[Supabase Error] get_user_memories fallback to local: {e}")
+
     with get_db_connection() as conn:
         rows = conn.execute(
             "SELECT pref_key, pref_value FROM user_memories WHERE user_id = ?", (user_id,)
@@ -290,6 +353,15 @@ def get_user_memories(user_id: str) -> Dict[str, str]:
 
 
 def clear_user_memories(user_id: str) -> None:
+    """Clear memory records for a given user (e.g. for GDPR / forget_me)."""
+    if is_supabase_enabled():
+        try:
+            url = f"{SUPABASE_URL}/rest/v1/user_memories"
+            params = {"user_id": f"eq.{user_id}"}
+            requests.delete(url, params=params, headers=_supabase_headers(), timeout=5)
+        except Exception as e:
+            print(f"[Supabase Error] clear_user_memories: {e}")
+
     with _lock, get_db_connection() as conn:
         conn.execute("DELETE FROM user_memories WHERE user_id = ?", (user_id,))
         conn.commit()
